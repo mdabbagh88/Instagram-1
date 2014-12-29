@@ -11,8 +11,6 @@
 #import "BLCComment.h"
 #import "BLCUser.h"
 
-#define kimageHeight 288
-
 @interface BLCMediaTableViewCell ( )
 {
   BLCMedia* _mediaItem;
@@ -46,11 +44,6 @@ static NSParagraphStyle *paragraphStyle;
     self.usernameAndCaptionLabel = [UILabel new];
     self.commentLabel = [UILabel new];
     self.commentLabel.numberOfLines = 0;
-
-    for ( UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel] )
-    {
-      [self.contentView addSubview:view];
-    }
     
     for (UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel])
     {
@@ -74,7 +67,7 @@ static NSParagraphStyle *paragraphStyle;
                                                                toItem:nil
                                                             attribute:NSLayoutAttributeNotAnAttribute
                                                            multiplier:1
-                                                             constant:100];
+                                                             constant:200];
   
   
     self.usernameAndCaptionLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
@@ -83,7 +76,7 @@ static NSParagraphStyle *paragraphStyle;
                                                                                  toItem:nil
                                                                               attribute:NSLayoutAttributeNotAnAttribute
                                                                              multiplier:1
-                                                                               constant:100];
+                                                                               constant:50];
  
     self.commentLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_commentLabel
                                                                    attribute:NSLayoutAttributeHeight
@@ -91,7 +84,8 @@ static NSParagraphStyle *paragraphStyle;
                                                                       toItem:nil
                                                                    attribute:NSLayoutAttributeNotAnAttribute
                                                                   multiplier:1
-                                                                    constant:100];
+                                                                    constant:200];
+    
     [self.contentView addConstraints:@[self.imageHeightConstraint, self.usernameAndCaptionLabelHeightConstraint, self.commentLabelHeightConstraint]];
     
     
@@ -124,8 +118,8 @@ static NSParagraphStyle *paragraphStyle;
   CGSize usernameLabelSize = [self.usernameAndCaptionLabel sizeThatFits:maxSize];
   CGSize commentLabelSize = [self.commentLabel sizeThatFits:maxSize];
 
-  self.usernameAndCaptionLabelHeightConstraint.constant = usernameLabelSize.height + 20;
-  self.commentLabelHeightConstraint.constant = commentLabelSize.height + 20;
+  self.usernameAndCaptionLabelHeightConstraint.constant = usernameLabelSize.height;
+  self.commentLabelHeightConstraint.constant = commentLabelSize.height + 150;
 
   // Hide the line between cells
   self.separatorInset = UIEdgeInsetsMake(0, 0, 0, CGRectGetWidth(self.bounds));
