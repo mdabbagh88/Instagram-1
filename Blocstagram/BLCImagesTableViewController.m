@@ -36,6 +36,20 @@
   [super viewDidLoad];
 
   [self.tableView registerClass:[BLCMediaTableViewCell class] forCellReuseIdentifier:cellIdentifier];
+  self.navigationItem.rightBarButtonItem = self.editButtonItem;
+  self.tableView.allowsSelectionDuringEditing = NO;
+}
+
+- ( void )setEditing:( BOOL )editing animated:( BOOL )animate
+{
+  [super setEditing:editing animated:animate];
+  [self.tableView setEditing:editing animated:animate];
+  
+}
+
+-(BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return NO;
 }
 
 #pragma mark - Table view data source
@@ -70,6 +84,10 @@
   {  
     [self.items removeObjectAtIndex:indexPath.row];
     [self.tableView reloadData];
+  }
+  else
+  {
+  NSLog(@"Not Implemented");
   }
 }
 
