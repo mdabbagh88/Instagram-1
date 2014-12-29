@@ -8,10 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface BLCDatasource : NSObject
+@interface BLCDataSource : NSObject
 
-+(instancetype) sharedInstance;
++( instancetype ) sharedInstance;
 
-@property (nonatomic, strong, readonly) NSArray *mediaItems;
+@property ( nonatomic, strong, readonly ) NSMutableArray *mediaItems;
 
 @end

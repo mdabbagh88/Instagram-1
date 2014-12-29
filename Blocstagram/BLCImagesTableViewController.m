@@ -7,6 +7,10 @@
 //
 
 #import "BLCImagesTableViewController.h"
+#import "BLCDataSource.h"
+#import "BLCMedia.h"
+#import "BLCUser.h"
+#import "BLCComment.h"
 
 #define cellIdentifier @"imageCell"
 
@@ -21,8 +25,7 @@
   self = [super initWithStyle:style];
   if ( self )
   {
-    // Custom initialization
-    self.images = [NSMutableArray array];
+
   }
   return self;
 }
@@ -31,15 +34,6 @@
 {
   [super viewDidLoad];
 
-  for ( int i = 1; i <= 10; i++ )
-  {
-    NSString *imageName = [NSString stringWithFormat:@"%d", i];
-    UIImage *image = [UIImage imageNamed:imageName];
-    if ( image )
-    {
-      [self.images addObject:image];
-    }
-  }
   [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:cellIdentifier];
 }
 
@@ -47,7 +41,12 @@
 
 - ( NSInteger )tableView:( UITableView * )tableView numberOfRowsInSection:( NSInteger )section
 {
-  return self.images.count;
+  return self.items.count;
+}
+
+- ( NSMutableArray* ) items
+{
+ return [BLCDataSource sharedInstance].mediaItems;
 }
 
 - ( UITableViewCell * )tableView:( UITableView * )tableView cellForRowAtIndexPath:( NSIndexPath * )indexPath
@@ -67,15 +66,16 @@
     imageView.tag = imageViewTag;
     [cell.contentView addSubview:imageView];
   }
-  UIImage *image = self.images[indexPath.row];
-  imageView.image = image;
+  BLCMedia *item = self.items[indexPath.row];
+  imageView.image = item.image;
     
   return cell;
 }
 
 - ( CGFloat ) tableView:( UITableView * )tableView heightForRowAtIndexPath:( NSIndexPath * )indexPath
 {
-  UIImage *image = self.images[indexPath.row];
+  BLCMedia *item = self.items[indexPath.row];
+  UIImage *image = item.image;
   return ( CGRectGetWidth( self.view.frame ) / image.size.width ) * image.size.height;
 }
 
@@ -83,11 +83,10 @@
 - ( void )tableView:( UITableView * )tableView commitEditingStyle:( UITableViewCellEditingStyle )editingStyle forRowAtIndexPath:( NSIndexPath * )indexPath
 {
   if ( editingStyle == UITableViewCellEditingStyleDelete )
-  {
-    [self.images removeObjectAtIndex:indexPath.row];
+  {  
+    [self.items removeObjectAtIndex:indexPath.row];
     [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
   }
 }
-
 
 @end
