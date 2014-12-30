@@ -11,13 +11,13 @@
 #import "BLCComment.h"
 #import "BLCMedia.h"
 
-@interface BLCDataSource ( ) {
-  NSMutableArray *_mediaItems;
-}
+@interface BLCDataSource ( )
 
 @end
 
-@implementation BLCDataSource
+@implementation BLCDataSource {
+  NSMutableArray *_mediaItems;
+}
 
 + ( instancetype ) sharedInstance
 {
