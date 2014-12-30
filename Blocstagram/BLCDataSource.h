@@ -9,7 +9,7 @@
 @class BLCMedia;
 #import <Foundation/Foundation.h>
 
-typedef void (^BLCNewItemCompletionBlock)(NSError *error);
+typedef void ( ^BLCNewItemCompletionBlock )( NSError *error );
 
 @interface BLCDataSource : NSObject
 
@@ -17,9 +17,8 @@ typedef void (^BLCNewItemCompletionBlock)(NSError *error);
 
 @property ( nonatomic, strong, readonly ) NSMutableArray *mediaItems;
 
- - (void) deleteMediaItem:(BLCMedia *)item;
-
-- (void) requestNewItemsWithCompletionHandler:(BLCNewItemCompletionBlock)completionHandler;
-- (void) requestOldItemsWithCompletionHandler:(BLCNewItemCompletionBlock)completionHandler;
+- ( void ) deleteMediaItem:(BLCMedia *)item;
+- ( void ) requestNewItemsWithCompletionHandler:(BLCNewItemCompletionBlock)completionHandler;
+- ( void ) requestOldItemsWithCompletionHandler:(BLCNewItemCompletionBlock)completionHandler;
 
 @end

@@ -45,9 +45,9 @@
   [self.refreshControl addTarget:self action:@selector(refreshControlDidFire:) forControlEvents:UIControlEventValueChanged];
 }
 
- - (void) dealloc
+- (void) dealloc
  {
-     [[BLCDataSource sharedInstance] removeObserver:self forKeyPath:@"mediaItems"];
+   [[BLCDataSource sharedInstance] removeObserver:self forKeyPath:@"mediaItems"];
  }
 
 - ( void )setEditing:( BOOL )editing animated:( BOOL )animate
@@ -57,11 +57,31 @@
   
 }
 
-- (void) refreshControlDidFire:(UIRefreshControl *) sender {
-     [[BLCDataSource sharedInstance] requestNewItemsWithCompletionHandler:^(NSError *error) {
-         [sender endRefreshing];
-     }];
- }
+- ( void ) refreshControlDidFire:( UIRefreshControl * ) sender
+{
+  [[BLCDataSource sharedInstance] requestNewItemsWithCompletionHandler:^(NSError *error)
+  {
+    [sender endRefreshing];
+  }];
+}
+
+- ( void ) infiniteScrollIfNecessary
+{
+  NSIndexPath *bottomIndexPath = [[self.tableView indexPathsForVisibleRows] lastObject];
+
+  if ( bottomIndexPath && bottomIndexPath.row == [BLCDataSource sharedInstance].mediaItems.count - 1 )
+  {
+    // The very last cell is on screen
+    [[BLCDataSource sharedInstance] requestOldItemsWithCompletionHandler:nil];
+  }
+}
+
+ #pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+  [self infiniteScrollIfNecessary];
+}
 
 - ( void ) observeValueForKeyPath:( NSString * )keyPath ofObject:( id )object change:( NSDictionary * )change context:( void * )context
 {
@@ -113,7 +133,7 @@
   }
 }
 
--(BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath
+-( BOOL )tableView:( UITableView * )tableView shouldIndentWhileEditingRowAtIndexPath:( NSIndexPath * )indexPath
 {
     return NO;
 }

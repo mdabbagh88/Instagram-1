@@ -33,7 +33,6 @@ static NSParagraphStyle *paragraphStyle;
 
 @implementation BLCMediaTableViewCell
 
-
 - ( id )initWithStyle:( UITableViewCellStyle )style reuseIdentifier:( NSString * )reuseIdentifier
 {
   self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
@@ -125,42 +124,45 @@ static NSParagraphStyle *paragraphStyle;
   self.separatorInset = UIEdgeInsetsMake(0, 0, 0, CGRectGetWidth(self.bounds));
 }
 
-- (NSAttributedString *) usernameAndCaptionString {
-     CGFloat usernameFontSize = 15;
+- ( NSAttributedString * ) usernameAndCaptionString
+{
+  CGFloat usernameFontSize = 15;
 
-     // Make a string that says "username caption text"
-     NSString *baseString = [NSString stringWithFormat:@"%@ %@", self.mediaItem.user.userName, self.mediaItem.caption];
+  // Make a string that says "username caption text"
+  NSString *baseString = [NSString stringWithFormat:@"%@ %@", self.mediaItem.user.userName, self.mediaItem.caption];
 
-     // Make an attributed string, with the "username" bold
-     NSMutableAttributedString *mutableUsernameAndCaptionString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : [lightFont fontWithSize:usernameFontSize], NSParagraphStyleAttributeName : paragraphStyle}];
+  // Make an attributed string, with the "username" bold
+  NSMutableAttributedString *mutableUsernameAndCaptionString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : [lightFont fontWithSize:usernameFontSize], NSParagraphStyleAttributeName : paragraphStyle}];
 
-     NSRange usernameRange = [baseString rangeOfString:self.mediaItem.user.userName];
-     [mutableUsernameAndCaptionString addAttribute:NSFontAttributeName value:[boldFont fontWithSize:usernameFontSize] range:usernameRange];
-     [mutableUsernameAndCaptionString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
+  NSRange usernameRange = [baseString rangeOfString:self.mediaItem.user.userName];
+  [mutableUsernameAndCaptionString addAttribute:NSFontAttributeName value:[boldFont fontWithSize:usernameFontSize] range:usernameRange];
+  [mutableUsernameAndCaptionString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
 
-     return mutableUsernameAndCaptionString;
+  return mutableUsernameAndCaptionString;
 }
 
- - (NSAttributedString *) commentString {
-     NSMutableAttributedString *commentString = [[NSMutableAttributedString alloc] init];
+- ( NSAttributedString * ) commentString
+{
+  NSMutableAttributedString *commentString = [[NSMutableAttributedString alloc] init];
 
-     for (BLCComment *comment in self.mediaItem.comments) {
-         // Make a string that says "username comment text" followed by a line break
-         NSString *baseString = [NSString stringWithFormat:@"%@ %@\n", comment.from.userName, comment.text];
+  for ( BLCComment *comment in self.mediaItem.comments )
+  {
+    // Make a string that says "username comment text" followed by a line break
+    NSString *baseString = [NSString stringWithFormat:@"%@ %@\n", comment.from.userName, comment.text];
 
-         // Make an attributed string, with the "username" bold
+    // Make an attributed string, with the "username" bold
 
-         NSMutableAttributedString *oneCommentString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : lightFont, NSParagraphStyleAttributeName : paragraphStyle}];
+    NSMutableAttributedString *oneCommentString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : lightFont, NSParagraphStyleAttributeName : paragraphStyle}];
 
-         NSRange usernameRange = [baseString rangeOfString:comment.from.userName];
-         [oneCommentString addAttribute:NSFontAttributeName value:boldFont range:usernameRange];
-         [oneCommentString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
+    NSRange usernameRange = [baseString rangeOfString:comment.from.userName];
+    [oneCommentString addAttribute:NSFontAttributeName value:boldFont range:usernameRange];
+    [oneCommentString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
 
-         [commentString appendAttributedString:oneCommentString];
-     }
+    [commentString appendAttributedString:oneCommentString];
+  }
 
-     return commentString;
- }
+  return commentString;
+}
 
 - ( void ) setMediaItem:( BLCMedia * )mediaItem
 {

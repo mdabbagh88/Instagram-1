@@ -90,6 +90,17 @@
      media.user = [self randomUser];
      media.image = [UIImage imageNamed:@"10.jpg"];
      media.caption = [self randomStringOfLength:(7)];
+    
+     NSUInteger commentCount = arc4random_uniform(10);
+     NSMutableArray *randomComments = [NSMutableArray array];
+ 
+     for ( int i  = 0; i <= commentCount; i++ )
+     {
+       BLCComment *randomComment = [self randomComment];
+       [randomComments addObject:randomComment];
+     }
+
+     media.comments = randomComments;
 
      NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
      [mutableArrayWithKVO insertObject:media atIndex:0];
@@ -112,6 +123,17 @@
     media.user = [self randomUser];
     media.image = [UIImage imageNamed:@"1.jpg"];
     media.caption = [self randomStringOfLength:(7)];
+    
+    NSUInteger commentCount = arc4random_uniform(10);
+    NSMutableArray *randomComments = [NSMutableArray array];
+ 
+    for ( int i  = 0; i <= commentCount; i++ )
+    {
+      BLCComment *randomComment = [self randomComment];
+      [randomComments addObject:randomComment];
+    }
+
+    media.comments = randomComments;
 
     NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
     [mutableArrayWithKVO addObject:media];
