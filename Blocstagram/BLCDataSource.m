@@ -13,6 +13,9 @@
 
 @interface BLCDataSource ( )
 
+@property (nonatomic, assign) BOOL isRefreshing;
+@property (nonatomic, assign) BOOL isLoadingOlderItems;
+
 @end
 
 @implementation BLCDataSource {
@@ -78,6 +81,50 @@
   [mutableArrayWithKVO removeObject:item];
 }
 
+- ( void ) requestNewItemsWithCompletionHandler:( BLCNewItemCompletionBlock )completionHandler
+{
+  if ( self.isRefreshing == NO )
+  {
+     self.isRefreshing = YES;
+     BLCMedia *media = [BLCMedia new];
+     media.user = [self randomUser];
+     media.image = [UIImage imageNamed:@"10.jpg"];
+     media.caption = [self randomStringOfLength:(7)];
+
+     NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+     [mutableArrayWithKVO insertObject:media atIndex:0];
+
+     self.isRefreshing = NO;
+
+     if ( completionHandler )
+     {
+       completionHandler(nil);
+     }
+  }
+}
+
+- ( void ) requestOldItemsWithCompletionHandler:( BLCNewItemCompletionBlock )completionHandler
+{
+  if ( self.isLoadingOlderItems == NO )
+  {
+    self.isLoadingOlderItems = YES;
+    BLCMedia *media = [BLCMedia new];
+    media.user = [self randomUser];
+    media.image = [UIImage imageNamed:@"1.jpg"];
+    media.caption = [self randomStringOfLength:(7)];
+
+    NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+    [mutableArrayWithKVO addObject:media];
+
+    self.isLoadingOlderItems = NO;
+
+    if ( completionHandler )
+    {
+      completionHandler(nil);
+    }
+  }
+}
+
 - (void) addRandomData {
      NSMutableArray *randomMediaItems = [NSMutableArray array];
  
@@ -88,7 +135,7 @@
          if (image) {
              BLCMedia *media = [[BLCMedia alloc] init];
              media.user = [self randomUser];
-             media.caption = [[self randomComment] text];
+             media.caption = [self randomStringOfLength:(7)];
              media.image = image;
              
  

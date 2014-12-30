@@ -40,6 +40,9 @@
   [self.tableView registerClass:[BLCMediaTableViewCell class] forCellReuseIdentifier:cellIdentifier];
   self.navigationItem.rightBarButtonItem = self.editButtonItem;
   self.tableView.allowsSelectionDuringEditing = NO;
+  
+  self.refreshControl = [[UIRefreshControl alloc] init];
+  [self.refreshControl addTarget:self action:@selector(refreshControlDidFire:) forControlEvents:UIControlEventValueChanged];
 }
 
  - (void) dealloc
@@ -53,6 +56,12 @@
   [self.tableView setEditing:editing animated:animate];
   
 }
+
+- (void) refreshControlDidFire:(UIRefreshControl *) sender {
+     [[BLCDataSource sharedInstance] requestNewItemsWithCompletionHandler:^(NSError *error) {
+         [sender endRefreshing];
+     }];
+ }
 
 - ( void ) observeValueForKeyPath:( NSString * )keyPath ofObject:( id )object change:( NSDictionary * )change context:( void * )context
 {
