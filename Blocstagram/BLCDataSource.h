@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 egu. All rights reserved.
 //
 
+@class BLCMedia;
 #import <Foundation/Foundation.h>
 
 @interface BLCDataSource : NSObject
@@ -14,4 +15,5 @@
 
 @property ( nonatomic, strong, readonly ) NSMutableArray *mediaItems;
 
+ - (void) deleteMediaItem:(BLCMedia *)item;
 @end
