@@ -85,7 +85,7 @@
 
  #pragma mark - UIScrollViewDelegate
 
-- ( void )scrollViewDidEndDecelerating:( UIScrollView * )scrollView
+- ( void )scrollViewDidScroll:( UIScrollView * )scrollView
 {
   [self infiniteScrollIfNecessary];
 }
