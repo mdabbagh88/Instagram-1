@@ -245,16 +245,29 @@
   {
     self.isRefreshing = YES;
     
-    NSString *minID = [[self.mediaItems firstObject] idNumber];
-    NSDictionary *parameters = @{@"min_id": minID};
-    
-    [self populateDataWithParameters:parameters completionHandler:^(NSError *error) {
+    if (self.mediaItems.count == 0)
+    {
+      [self populateDataWithParameters:nil completionHandler:^(NSError *error) {
       self.isRefreshing = NO;
       
       if (completionHandler) {
         completionHandler(error);
       }
-    }];
+      }];
+    }
+    else
+    {
+      NSString *minID = [[self.mediaItems firstObject] idNumber];
+      NSDictionary *parameters = @{@"min_id": minID};
+    
+      [self populateDataWithParameters:parameters completionHandler:^(NSError *error) {
+      self.isRefreshing = NO;
+      
+      if (completionHandler) {
+        completionHandler(error);
+      }
+      }];
+    }
   }
 }
 

@@ -173,9 +173,6 @@
 {
   if ( editingStyle == UITableViewCellEditingStyleDelete )
   {  
-    [self.items removeObjectAtIndex:indexPath.row];
-    [self.tableView reloadData];
-    
     BLCMedia *item = self.items[indexPath.row];
     [[BLCDataSource sharedInstance] deleteMediaItem:item];
   }
