@@ -11,6 +11,7 @@
 
 @interface BLCLoginViewController ( ) <UIWebViewDelegate>
 
+//We use Instagram API's Login Page
 @property ( nonatomic, weak ) UIWebView *webView;
 
 @end
@@ -40,6 +41,7 @@ NSString *const BLCLoginViewControllerDidGetAccessTokenNotification = @"BLCLogin
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [self.webView loadRequest:request];
   }
+  self.title = @"Login";
 }
 
 - ( NSString * )redirectURI
@@ -66,14 +68,9 @@ NSString *const BLCLoginViewControllerDidGetAccessTokenNotification = @"BLCLogin
 {
   // Removing this line causes a weird flickering effect when you relaunch the app after logging in, as the web view is briefly displayed, automatically authenticates with cookies, returns the access token, and dismisses the login view, sometimes in less than a second.
   [self clearInstagramCookies];
- 
-  // see https://developer.apple.com/library/ios/documentation/uikit/reference/UIWebViewDelegate_Protocol/Reference/Reference.html#//apple_ref/doc/uid/TP40006951-CH3-DontLinkElementID_1
   self.webView.delegate = nil;
 }
- 
- /**
-  Clears Instagram cookies. This prevents caching the credentials in the cookie jar.
-  */
+
 - ( void ) clearInstagramCookies
 {
   for( NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies] )

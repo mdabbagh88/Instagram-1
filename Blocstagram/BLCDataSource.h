@@ -9,8 +9,6 @@
 @class BLCMedia;
 #import <Foundation/Foundation.h>
 
-
-
 typedef void ( ^BLCNewItemCompletionBlock )( NSError *error );
 
 @interface BLCDataSource : NSObject
@@ -20,10 +18,10 @@ typedef void ( ^BLCNewItemCompletionBlock )( NSError *error );
 + ( NSString * ) instagramClientID;
 
 @property ( nonatomic, strong, readonly ) NSMutableArray *mediaItems;
+//respond to the ACCESS TOKEN Notification from the Login Page
 @property (nonatomic, strong, readonly) NSString *accessToken;
 
 - ( void ) deleteMediaItem:(BLCMedia *)item;
 - ( void ) requestNewItemsWithCompletionHandler:(BLCNewItemCompletionBlock)completionHandler;
 - ( void ) requestOldItemsWithCompletionHandler:(BLCNewItemCompletionBlock)completionHandler;
-
 @end

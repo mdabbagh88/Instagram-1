@@ -12,6 +12,7 @@
 #import "BLCUser.h"
 #import "BLCComment.h"
 #import "BLCMediaTableViewCell.h"
+#import "BLCLoginViewController.h"
 
 #define cellIdentifier @"mediaCell"
 
@@ -40,9 +41,18 @@
   [self.tableView registerClass:[BLCMediaTableViewCell class] forCellReuseIdentifier:cellIdentifier];
   self.navigationItem.rightBarButtonItem = self.editButtonItem;
   self.tableView.allowsSelectionDuringEditing = NO;
+  UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"<" style:UIBarButtonItemStylePlain target:self action:@selector(backPressed:)];
+  self.navigationItem.leftBarButtonItem = backButton;
   
   self.refreshControl = [[UIRefreshControl alloc] init];
   [self.refreshControl addTarget:self action:@selector(refreshControlDidFire:) forControlEvents:UIControlEventValueChanged];
+}
+
+-( void )backPressed: ( id )sender
+{
+  BLCLoginViewController *loginVC = [BLCLoginViewController new];
+  [self.navigationController setViewControllers:@[loginVC] animated:YES];
+  
 }
 
 - (void) dealloc

@@ -103,13 +103,12 @@
   }
 }
  
- - (void) parseDataFromFeedDictionary:(NSDictionary *) feedDictionary fromRequestWithParameters:(NSDictionary *)parameters {
-     NSLog(@"%@", feedDictionary);
- }
+- ( void ) parseDataFromFeedDictionary:( NSDictionary * ) feedDictionary fromRequestWithParameters:( NSDictionary * )parameters
+{
+  NSLog(@"%@", feedDictionary);
+}
 
-
-
- #pragma mark - Key/Value Observing
+#pragma mark - Key/Value Observing
 
 - ( NSUInteger ) countOfMediaItems
 {
@@ -177,9 +176,6 @@
     }
   }
 }
-
-
-
 
 
 @end
