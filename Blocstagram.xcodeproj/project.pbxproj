@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4F4875031A5343A300D0124B /* BLCLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4F4875021A5343A300D0124B /* BLCLoginViewController.m */; };
+		4FC4588E1A544B6E00C45D57 /* ClientKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FC4588D1A544B6E00C45D57 /* ClientKey.m */; };
 		4FCF67FD1A50D722009B1FD4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF67FC1A50D722009B1FD4 /* main.m */; };
 		4FCF68001A50D722009B1FD4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4FCF67FF1A50D722009B1FD4 /* AppDelegate.m */; };
 		4FCF68081A50D722009B1FD4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4FCF68071A50D722009B1FD4 /* Images.xcassets */; };
@@ -34,6 +35,8 @@
 /* Begin PBXFileReference section */
 		4F4875011A5343A300D0124B /* BLCLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLCLoginViewController.h; sourceTree = "<group>"; };
 		4F4875021A5343A300D0124B /* BLCLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLCLoginViewController.m; sourceTree = "<group>"; };
+		4FC4588C1A544B6E00C45D57 /* ClientKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClientKey.h; sourceTree = "<group>"; };
+		4FC4588D1A544B6E00C45D57 /* ClientKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClientKey.m; sourceTree = "<group>"; };
 		4FCF67F71A50D722009B1FD4 /* Blocstagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blocstagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4FCF67FB1A50D722009B1FD4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4FCF67FC1A50D722009B1FD4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -99,6 +102,8 @@
 			children = (
 				4FCF67FE1A50D722009B1FD4 /* AppDelegate.h */,
 				4FCF67FF1A50D722009B1FD4 /* AppDelegate.m */,
+				4FC4588C1A544B6E00C45D57 /* ClientKey.h */,
+				4FC4588D1A544B6E00C45D57 /* ClientKey.m */,
 				4FCF68201A50D791009B1FD4 /* BLCImagesTableViewController.h */,
 				4FCF68211A50D791009B1FD4 /* BLCImagesTableViewController.m */,
 				4FCF682F1A51B886009B1FD4 /* BLCMediaTableViewCell.h */,
@@ -247,6 +252,7 @@
 			files = (
 				4FCF68251A510083009B1FD4 /* BLCUser.m in Sources */,
 				4FCF68001A50D722009B1FD4 /* AppDelegate.m in Sources */,
+				4FC4588E1A544B6E00C45D57 /* ClientKey.m in Sources */,
 				4FCF67FD1A50D722009B1FD4 /* main.m in Sources */,
 				4FCF68221A50D791009B1FD4 /* BLCImagesTableViewController.m in Sources */,
 				4FCF682E1A51A003009B1FD4 /* BLCDataSource.m in Sources */,

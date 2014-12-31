@@ -43,7 +43,6 @@
   self.tableView.allowsSelectionDuringEditing = NO;
   UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@"<" style:UIBarButtonItemStylePlain target:self action:@selector(backPressed:)];
   self.navigationItem.leftBarButtonItem = backButton;
-  
   self.refreshControl = [[UIRefreshControl alloc] init];
   [self.refreshControl addTarget:self action:@selector(refreshControlDidFire:) forControlEvents:UIControlEventValueChanged];
 }
@@ -52,7 +51,6 @@
 {
   BLCLoginViewController *loginVC = [BLCLoginViewController new];
   [self.navigationController setViewControllers:@[loginVC] animated:YES];
-  
 }
 
 - (void) dealloc
@@ -64,12 +62,11 @@
 {
   [super setEditing:editing animated:animate];
   [self.tableView setEditing:editing animated:animate];
-  
 }
 
 - ( void ) refreshControlDidFire:( UIRefreshControl * ) sender
 {
-  [[BLCDataSource sharedInstance] requestNewItemsWithCompletionHandler:^(NSError *error)
+  [[BLCDataSource sharedInstance] requestNewItemsWithCompletionHandler:^( NSError *error )
   {
     [sender endRefreshing];
   }];
@@ -88,7 +85,7 @@
 
  #pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+- ( void )scrollViewDidEndDecelerating:( UIScrollView * )scrollView
 {
   [self infiniteScrollIfNecessary];
 }
@@ -100,9 +97,8 @@
     // We know mediaItems changed.  Let's see what kind of change it is.
     int kindOfChange = [change[NSKeyValueChangeKindKey] intValue];
 
-    if (kindOfChange == NSKeyValueChangeSetting)
+    if ( kindOfChange == NSKeyValueChangeSetting )
     {
-      // Someone set a brand new images array
       [self.tableView reloadData];
     }
     else if ( kindOfChange == NSKeyValueChangeInsertion || kindOfChange == NSKeyValueChangeRemoval || kindOfChange == NSKeyValueChangeReplacement )
@@ -114,7 +110,7 @@
      
        // Convert this NSIndexSet to an NSArray of NSIndexPaths (which is what the table view animation methods require)
        NSMutableArray *indexPathsThatChanged = [NSMutableArray array];
-       [indexSetOfChanges enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop)
+       [indexSetOfChanges enumerateIndexesUsingBlock:^( NSUInteger idx, BOOL *stop )
        {
          NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:idx inSection:0];
          [indexPathsThatChanged addObject:newIndexPath];
@@ -170,7 +166,6 @@
 - ( CGFloat ) tableView:( UITableView * )tableView heightForRowAtIndexPath:( NSIndexPath * )indexPath
 {
   BLCMedia *item = self.items[indexPath.row];
-
   return [BLCMediaTableViewCell heightForMediaItem:item width:CGRectGetWidth(self.view.frame)];
 }
 
@@ -181,12 +176,8 @@
     [self.items removeObjectAtIndex:indexPath.row];
     [self.tableView reloadData];
     
-      BLCMedia *item = self.items[indexPath.row];
-      [[BLCDataSource sharedInstance] deleteMediaItem:item];
-  }
-  else
-  {
-  NSLog(@"Not Implemented");
+    BLCMedia *item = self.items[indexPath.row];
+    [[BLCDataSource sharedInstance] deleteMediaItem:item];
   }
 }
 

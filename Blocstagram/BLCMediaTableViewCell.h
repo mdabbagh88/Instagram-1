@@ -17,4 +17,5 @@
 // Set a new media item
 - ( void )setMediaItem:( BLCMedia * )mediaItem;
 + ( CGFloat ) heightForMediaItem:( BLCMedia * )mediaItem width:( CGFloat )width;
+
 @end

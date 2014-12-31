@@ -13,13 +13,11 @@ typedef void ( ^BLCNewItemCompletionBlock )( NSError *error );
 
 @interface BLCDataSource : NSObject
 
-+ ( instancetype ) sharedInstance;
-
-+ ( NSString * ) instagramClientID;
-
 @property ( nonatomic, strong, readonly ) NSMutableArray *mediaItems;
-//respond to the ACCESS TOKEN Notification from the Login Page
 @property (nonatomic, strong, readonly) NSString *accessToken;
+
++ ( instancetype ) sharedInstance;
++ ( NSString * ) instagramClientID;
 
 - ( void ) deleteMediaItem:(BLCMedia *)item;
 - ( void ) requestNewItemsWithCompletionHandler:(BLCNewItemCompletionBlock)completionHandler;

@@ -44,13 +44,13 @@ static NSParagraphStyle *paragraphStyle;
     self.commentLabel = [UILabel new];
     self.commentLabel.numberOfLines = 0;
     
-    for (UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel])
+    for ( UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel] )
     {
       [self.contentView addSubview:view];
       view.translatesAutoresizingMaskIntoConstraints = NO;
     }
     
-    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel);
+    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings( _mediaImageView, _usernameAndCaptionLabel, _commentLabel );
  
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|" options:kNilOptions metrics:nil views:viewDictionary]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
@@ -86,8 +86,6 @@ static NSParagraphStyle *paragraphStyle;
                                                                     constant:200];
     
     [self.contentView addConstraints:@[self.imageHeightConstraint, self.usernameAndCaptionLabelHeightConstraint, self.commentLabelHeightConstraint]];
-    
-    
   }
   return self;
 }
@@ -113,7 +111,7 @@ static NSParagraphStyle *paragraphStyle;
 {
   [super layoutSubviews];
   
-  CGSize maxSize = CGSizeMake(CGRectGetWidth(self.bounds), CGFLOAT_MAX);
+  CGSize maxSize = CGSizeMake( CGRectGetWidth(self.bounds ), CGFLOAT_MAX );
   CGSize usernameLabelSize = [self.usernameAndCaptionLabel sizeThatFits:maxSize];
   CGSize commentLabelSize = [self.commentLabel sizeThatFits:maxSize];
 
@@ -121,7 +119,7 @@ static NSParagraphStyle *paragraphStyle;
   self.commentLabelHeightConstraint.constant = commentLabelSize.height + 150;
 
   // Hide the line between cells
-  self.separatorInset = UIEdgeInsetsMake(0, 0, 0, CGRectGetWidth(self.bounds));
+  self.separatorInset = UIEdgeInsetsMake( 0, 0, 0, CGRectGetWidth( self.bounds ) );
 }
 
 - ( NSAttributedString * ) usernameAndCaptionString
@@ -143,7 +141,7 @@ static NSParagraphStyle *paragraphStyle;
 
 - ( NSAttributedString * ) commentString
 {
-  NSMutableAttributedString *commentString = [[NSMutableAttributedString alloc] init];
+  NSMutableAttributedString *commentString = [NSMutableAttributedString new];
 
   for ( BLCComment *comment in self.mediaItem.comments )
   {
@@ -170,13 +168,14 @@ static NSParagraphStyle *paragraphStyle;
   self.mediaImageView.image = _mediaItem.image;
   self.usernameAndCaptionLabel.attributedText = [self usernameAndCaptionString];
   self.commentLabel.attributedText = [self commentString];
-  if (_mediaItem.image) {
-          self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
-      } else {
-          self.imageHeightConstraint.constant = 0;
-      }
-
-
+  if ( _mediaItem.image )
+  {
+    self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
+  }
+  else
+  {
+    self.imageHeightConstraint.constant = 0;
+  }
 }
 
 -( BLCMedia * )mediaItem
@@ -194,18 +193,17 @@ static NSParagraphStyle *paragraphStyle;
   [layoutCell setNeedsLayout];
   [layoutCell layoutIfNeeded];
   
-      return CGRectGetMaxY(layoutCell.commentLabel.frame);
+  return CGRectGetMaxY(layoutCell.commentLabel.frame);
 }
 
 - ( void )setSelected:( BOOL )selected animated:( BOOL )animated
 {
   [super setSelected:NO animated:animated];
-
-  // Configure the view for the selected state
 }
 
- - (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
-     [super setHighlighted:NO animated:animated];
- }
+- ( void )setHighlighted:( BOOL )highlighted animated:( BOOL )animated
+{
+  [super setHighlighted:NO animated:animated];
+}
 
 @end

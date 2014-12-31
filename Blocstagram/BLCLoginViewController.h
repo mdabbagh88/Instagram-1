@@ -16,5 +16,4 @@
 
 extern NSString *const BLCLoginViewControllerDidGetAccessTokenNotification;
 
-
 @end
