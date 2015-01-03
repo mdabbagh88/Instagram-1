@@ -50,7 +50,38 @@
   
   if ( self )
   {
-    [self registerForAccessTokenNotification];
+    self.accessToken = [UICKeyChainStore stringForKey:@"access token"];
+    
+    if ( !self.accessToken )
+    {
+      [self registerForAccessTokenNotification];
+    }
+    else
+    {
+      [self populateDataWithParameters:nil completionHandler:nil];
+      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
+        {
+          NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
+          NSArray *storedMediaItems = [NSKeyedUnarchiver unarchiveObjectWithFile:fullPath];
+ 
+          dispatch_async(dispatch_get_main_queue(), ^
+          {
+            if ( storedMediaItems.count > 0 )
+            {
+               NSMutableArray *mutableMediaItems = [storedMediaItems mutableCopy];
+ 
+               [self willChangeValueForKey:@"mediaItems"];
+               self.mediaItems = mutableMediaItems;
+               [self didChangeValueForKey:@"mediaItems"];
+               [self requestNewItemsWithCompletionHandler:nil];
+            }
+            else
+            {
+              [self populateDataWithParameters:nil completionHandler:nil];
+            }
+          });
+      });
+    }
   }
   return self;
 }
@@ -60,6 +91,7 @@
   [[NSNotificationCenter defaultCenter] addObserverForName:BLCLoginViewControllerDidGetAccessTokenNotification object:nil queue:nil usingBlock:^( NSNotification *note )
    {
      self.accessToken = note.object;
+     [UICKeyChainStore setString:self.accessToken forKey:@"access token"];
      [self populateDataWithParameters:nil completionHandler:nil];
    }];
 }
@@ -115,6 +147,7 @@
                        }
                      }
     });
+    
   }
 }
 
@@ -128,8 +161,8 @@
   {
     BLCMedia *mediaItem = [[BLCMedia alloc] initWithDictionary:mediaDictionary];
     
-    if ( mediaItem )
-    {
+   if ( mediaItem )
+   {
       [tmpMediaItems addObject:mediaItem];
       [self downloadImageForMediaItem:mediaItem];
     }
@@ -163,6 +196,27 @@
     [self willChangeValueForKey:@"mediaItems"];
     self.mediaItems = tmpMediaItems;
     [self didChangeValueForKey:@"mediaItems"];
+  }
+  
+  if ( tmpMediaItems.count > 0 )
+  {
+    // Write the changes to disk
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
+      {
+         NSUInteger numberOfItemsToSave = MIN(self.mediaItems.count, 100);
+         NSArray *mediaItemsToSave = [self.mediaItems subarrayWithRange:NSMakeRange(0, numberOfItemsToSave)];
+ 
+         NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
+         NSData *mediaItemData = [NSKeyedArchiver archivedDataWithRootObject:mediaItemsToSave];
+ 
+         NSError *dataError;
+         BOOL wroteSuccessfully = [mediaItemData writeToFile:fullPath options:NSDataWritingAtomic | NSDataWritingFileProtectionCompleteUnlessOpen error:&dataError];
+ 
+         if ( !wroteSuccessfully )
+         {
+           NSLog( @"Couldn't write file: %@", dataError );
+         }
+      });
   }
 }
 
@@ -286,6 +340,14 @@
       }
     }];
   }
+}
+
+- ( NSString * ) pathForFilename:( NSString * ) filename
+{
+  NSArray *paths = NSSearchPathForDirectoriesInDomains( NSCachesDirectory, NSUserDomainMask, YES );
+  NSString *documentsDirectory = [paths firstObject];
+  NSString *dataPath = [documentsDirectory stringByAppendingPathComponent:filename];
+  return dataPath;
 }
 
 @end

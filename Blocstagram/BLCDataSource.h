@@ -8,6 +8,7 @@
 
 @class BLCMedia;
 #import <Foundation/Foundation.h>
+#import <UICKeyChainStore.h>
 
 typedef void ( ^BLCNewItemCompletionBlock )( NSError *error );
 
