@@ -7,9 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BLCMedia.h"
+//BLCMedia was imported, not a class? This is confusing!
+@class BLCMedia, BLCMediaTableViewCell;
+
+@protocol BLCMediaTableViewCellDelegate <NSObject>
+
+- ( void ) cell: ( BLCMediaTableViewCell * )cell didTapImageView:( UIImageView *)imageView;
+ - (void) cell:(BLCMediaTableViewCell *)cell didLongPressImageView:(UIImageView *)imageView;
+
+@end
 
 @interface BLCMediaTableViewCell : UITableViewCell
+
+//This was never a property before? This is confusing!
+@property ( nonatomic, strong ) BLCMedia *mediaItem;
+@property ( nonatomic, strong ) id <BLCMediaTableViewCellDelegate> delegate;
+
 
 // Get the media item
 - ( BLCMedia * )mediaItem;

@@ -64,7 +64,7 @@
           NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
           NSArray *storedMediaItems = [NSKeyedUnarchiver unarchiveObjectWithFile:fullPath];
  
-          dispatch_async(dispatch_get_main_queue(), ^
+          dispatch_async(dispatch_get_main_queue( ), ^
           {
             if ( storedMediaItems.count > 0 )
             {
