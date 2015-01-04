@@ -193,7 +193,7 @@
     // Write the changes to disk
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
       {
-         NSUInteger numberOfItemsToSave = MIN(self.mediaItems.count, 100);
+         NSUInteger numberOfItemsToSave = MIN(self.mediaItems.count, 50);
          NSArray *mediaItemsToSave = [self.mediaItems subarrayWithRange:NSMakeRange(0, numberOfItemsToSave)];
  
          NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
@@ -224,6 +224,7 @@
                                     NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
                                     NSUInteger index = [mutableArrayWithKVO indexOfObject:mediaItem];
                                     [mutableArrayWithKVO replaceObjectAtIndex:index withObject:mediaItem];
+                                    NSLog(@"Success downloading Image: %@", mediaItem);
                                   }
                                 }
                                 failure:^( AFHTTPRequestOperation *operation, NSError *error )
