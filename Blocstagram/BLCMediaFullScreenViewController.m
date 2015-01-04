@@ -12,8 +12,9 @@
 @interface BLCMediaFullScreenViewController () <UIScrollViewDelegate>
 
 @property ( nonatomic, strong ) BLCMedia *media;
-@property (nonatomic, strong) UITapGestureRecognizer *tap;
-@property (nonatomic, strong) UITapGestureRecognizer *doubleTap;
+@property ( nonatomic, strong ) UITapGestureRecognizer *tap;
+@property ( nonatomic, strong ) UITapGestureRecognizer *doubleTap;
+@property ( nonatomic, strong ) UIButton *shareButton;
 
 @end
 
@@ -26,6 +27,7 @@
   if ( self )
   {
     self.media = media;
+    self.shareButton = _shareButton;
   }
   
   return self;
@@ -39,7 +41,7 @@
   self.scrollView.delegate = self;
   self.scrollView.backgroundColor = [UIColor whiteColor];
   
-    //why don't we make this self.view = self.scrollview?
+  //why don't we make this self.view = self.scrollview?
   [self.view addSubview:self.scrollView];
   
   self.imageView = [UIImageView new];
@@ -52,6 +54,13 @@
   
   self.doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector( doubleTapFired: )];
   self.doubleTap.numberOfTapsRequired = 2;
+  
+  //Add Custom Button
+  self.shareButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+  [self.shareButton setTitle:@"Share" forState:UIControlStateNormal];
+ 
+  [self.shareButton addTarget:self action:@selector(shareButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+  [self.scrollView addSubview:self.shareButton];
   
   [self.tap requireGestureRecognizerToFail:self.doubleTap];
   
@@ -69,9 +78,11 @@
 {
   [super viewWillLayoutSubviews];
   self.scrollView.frame = self.view.bounds;
-  
+ 
   CGSize scrollViewFrameSize = self.scrollView.frame.size;
   CGSize scrollViewContentSize = self.scrollView.contentSize;
+  
+  [self.shareButton setFrame:CGRectMake(self.view.frame.size.width * 0.8, self.view.frame.size.height * 0.05, 50, 50)];
   
   CGFloat scaleWidth = scrollViewFrameSize.width / scrollViewContentSize.width;
   CGFloat scaleHeight = scrollViewFrameSize.height / scrollViewContentSize.height;
@@ -145,6 +156,11 @@
   {
     [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:YES];
   }
+}
+
+-( void )shareButtonPressed:( id )sender
+{
+  NSLog( @"hi" );
 }
 
 @end
