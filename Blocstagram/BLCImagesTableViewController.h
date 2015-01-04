@@ -10,4 +10,6 @@
 
 @interface BLCImagesTableViewController : UITableViewController
 
+- ( void ) presentActivityVC:( NSMutableArray * ) itemsToShare;
+
 @end

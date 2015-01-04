@@ -194,7 +194,6 @@
   
   fullScreenVC.transitioningDelegate = self;
   fullScreenVC.modalPresentationStyle = UIModalPresentationCustom;
-  
   [self presentViewController:fullScreenVC animated:YES completion:nil];
 }
 
@@ -203,7 +202,6 @@
 - ( id<UIViewControllerAnimatedTransitioning> )animationControllerForPresentedController:( UIViewController * )presented
                                                                   presentingController:(UIViewController *)presenting
                                                                       sourceController:(UIViewController *)source {
-  
   BLCMediaFullScreenAnimator *animator = [BLCMediaFullScreenAnimator new];
   animator.presenting = YES;
   animator.cellImageView = self.lastTappedImageView;
@@ -216,7 +214,7 @@
   return animator;
 }
 
-- (void) cell:( BLCMediaTableViewCell * )cell didLongPressImageView:( UIImageView * )imageView
+- ( void ) cell:( BLCMediaTableViewCell * )cell didLongPressImageView:( UIImageView * )imageView
 {
   NSMutableArray *itemsToShare = [NSMutableArray array];
   
@@ -232,8 +230,14 @@
   
   if (itemsToShare.count > 0)
   {
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
-    [self presentViewController:activityVC animated:YES completion:nil];
+    [self presentActivityVC:itemsToShare];
   }
 }
+
+- ( void ) presentActivityVC:( NSMutableArray * ) itemsToShare
+{
+  UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
+  [self presentViewController:activityVC animated:YES completion:nil];
+}
+
 @end

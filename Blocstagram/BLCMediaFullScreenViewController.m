@@ -8,8 +8,10 @@
 
 #import "BLCMediaFullScreenViewController.h"
 #import "BLCMedia.h"
+#import "BLCMediaTableViewCell.h"
+#import "BLCImagesTableViewController.h"
 
-@interface BLCMediaFullScreenViewController () <UIScrollViewDelegate>
+@interface BLCMediaFullScreenViewController ( ) <UIScrollViewDelegate>
 
 @property ( nonatomic, strong ) BLCMedia *media;
 @property ( nonatomic, strong ) UITapGestureRecognizer *tap;
@@ -27,7 +29,6 @@
   if ( self )
   {
     self.media = media;
-    self.shareButton = _shareButton;
   }
   
   return self;
@@ -142,7 +143,7 @@
 
   if ( self.scrollView.zoomScale == self.scrollView.minimumZoomScale )
   {
-      self.shareButton.hidden = true;
+    self.shareButton.hidden = true;
     CGPoint locationPoint = [sender locationInView:self.imageView];
     
     CGSize scrollViewSize = self.scrollView.bounds.size;
@@ -156,14 +157,30 @@
   }
   else
   {
-      self.shareButton.hidden = false;
+    self.shareButton.hidden = false;
     [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:YES];
   }
 }
 
 -( void )shareButtonPressed:( id )sender
 {
-  NSLog( @"hi" );
+  NSMutableArray *itemsToShare = [NSMutableArray array];
+  
+  if ( self.media.caption.length > 0 )
+  {
+    [itemsToShare addObject:self.media.caption];
+  }
+  if (self.media.image)
+  {
+    [itemsToShare addObject:self.media.image];
+  }
+  if (itemsToShare.count > 0)
+  {
+    BLCImagesTableViewController *tableViewVC = [[BLCImagesTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    
+    [self presentViewController:tableViewVC animated:YES completion:nil];
+    [tableViewVC presentActivityVC:itemsToShare];
+  }
 }
 
 @end

@@ -27,7 +27,6 @@
 @property (nonatomic, strong ) UITapGestureRecognizer *tapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
-
 @end
 
 static UIFont *lightFont;
