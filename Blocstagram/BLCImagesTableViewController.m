@@ -197,10 +197,9 @@
   [self presentViewController:fullScreenVC animated:YES completion:nil];
 }
 
-- ( void ) cell:( BLCMediaTableViewCell * )cell didTwoFingerTapImageView:( UIImageView * )imageView
+- ( void ) cell:( BLCMediaTableViewCell * )cell didDoubleTapImageView:( UIImageView * )imageView
 {
-  NSLog(@"Hello");
-  [[BLCDataSource sharedInstance] downloadImageForMediaItem:cell.mediaItem];
+  [[BLCDataSource sharedInstance] requestNewItemsWithCompletionHandler:nil];
 }
 
 #pragma mark - UIViewControllerTransitioningDelegate

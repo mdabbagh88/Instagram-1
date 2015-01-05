@@ -242,8 +242,7 @@ static NSParagraphStyle *paragraphStyle;
 
 - ( void ) twoFingerTapFired:( UITapGestureRecognizer * )sender
 {
-   [self.delegate cell:self didTwoFingerTapImageView:self.mediaImageView];
-   
+   [self.delegate cell:self didDoubleTapImageView:self.mediaImageView];
 }
 
 #pragma mark - UIGestureRecognizerDelegate
@@ -253,9 +252,11 @@ static NSParagraphStyle *paragraphStyle;
   return self.isEditing == NO;
 }
 
-- (void) longPressFired:(UILongPressGestureRecognizer *)sender {
-     if (sender.state == UIGestureRecognizerStateBegan) {
-         [self.delegate cell:self didLongPressImageView:self.mediaImageView];
-     }
- }
+- ( void ) longPressFired:(UILongPressGestureRecognizer * )sender
+{
+  if ( sender.state == UIGestureRecognizerStateBegan )
+  {
+    [self.delegate cell:self didLongPressImageView:self.mediaImageView];
+  }
+}
 @end

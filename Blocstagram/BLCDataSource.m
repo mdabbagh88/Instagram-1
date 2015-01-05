@@ -227,10 +227,30 @@
                                     [mutableArrayWithKVO replaceObjectAtIndex:index withObject:mediaItem];
                                     NSLog(@"Success downloading Image: %@", mediaItem);
                                   }
+                                  else
+                                  {
+                                    mediaItem.downloadState = BLCMediaDownloadStateNonRecoverableError;
+                                  }
                                 }
                                 failure:^( AFHTTPRequestOperation *operation, NSError *error )
                                 {
-                                  NSLog(@"Error downloading image: %@", error);
+                                  mediaItem.downloadState = BLCMediaDownloadStateNonRecoverableError;
+                                  if ([error.domain isEqualToString:NSURLErrorDomain])
+                                  {
+                                    if (error.code == NSURLErrorTimedOut ||
+                                        error.code == NSURLErrorCancelled ||
+                                        error.code == NSURLErrorCannotConnectToHost ||
+                                        error.code == NSURLErrorNetworkConnectionLost ||
+                                        error.code == NSURLErrorNotConnectedToInternet ||
+                                        error.code == kCFURLErrorInternationalRoamingOff ||
+                                        error.code == kCFURLErrorCallIsActive ||
+                                        error.code == kCFURLErrorDataNotAllowed ||
+                                        error.code == kCFURLErrorRequestBodyStreamExhausted)
+                                    {
+                                      mediaItem.downloadState = BLCMediaDownloadStateNeedsImage;
+                                    }
+                                        
+                                  }
                                 }];
   }
 }
