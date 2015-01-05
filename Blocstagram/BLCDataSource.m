@@ -155,7 +155,7 @@
     if ( mediaItem )
     {
       [tmpMediaItems addObject:mediaItem];
-      [self downloadImageForMediaItem:mediaItem];
+      //[self downloadImageForMediaItem:mediaItem];
     }
   }
   
@@ -215,6 +215,7 @@
 {
   if ( mediaItem.mediaURL && !mediaItem.image )
   {
+    mediaItem.downloadState = BLCMediaDownloadStateDownloadInProgress;
     [self.instagramOperationManager GET:mediaItem.mediaURL.absoluteString
                              parameters:nil
                                 success:^( AFHTTPRequestOperation *operation, id responseObject )

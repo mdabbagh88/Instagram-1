@@ -240,4 +240,26 @@
   }
 }
 
+- ( void ) tableView:( UITableView *)tableView willDisplayCell:( UITableViewCell * )cell forRowAtIndexPath:( NSIndexPath * )indexPath
+{
+  BLCMedia *mediaItem = [BLCDataSource sharedInstance].mediaItems[indexPath.row];
+  if ( mediaItem.downloadState == BLCMediaDownloadStateNeedsImage )
+  {
+    [[BLCDataSource sharedInstance] downloadImageForMediaItem:mediaItem];
+  }
+}
+
+-( CGFloat) tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  BLCMedia *item = [BLCDataSource sharedInstance].mediaItems[indexPath.row];
+  if (item.image)
+  {
+    return 350;
+  }
+  else
+  {
+    return 150;
+  }
+}
+
 @end
