@@ -11,10 +11,6 @@
 #import "BLCLoginViewController.h"
 #import "BLCDataSource.h"
 
-@interface AppDelegate ()
-
-@end
-
 @implementation AppDelegate
 
 - ( BOOL )application:( UIApplication * )application didFinishLaunchingWithOptions:( NSDictionary * )launchOptions

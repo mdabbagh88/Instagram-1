@@ -12,31 +12,33 @@
 #import "BLCMedia.h"
 #import "BLCLoginViewController.h"
 #import "ClientKey.h"
+#import <UICKeyChainStore.h>
+#import <AFNetworking/AFNetworking.h>
 
 @interface BLCDataSource ( )
+{
+  NSMutableArray *_mediaItems;
+}
 
 @property ( nonatomic, assign ) BOOL isRefreshing;
 @property ( nonatomic, assign ) BOOL isLoadingOlderItems;
 @property ( nonatomic, assign ) BOOL thereAreNoMoreOlderMessages;
 @property ( nonatomic, strong ) NSString *accessToken;
-@property ( nonatomic, strong ) NSMutableArray *mediaItems;
-@property (nonatomic, strong) AFHTTPRequestOperationManager *instagramOperationManager;
+@property ( nonatomic, strong ) NSArray *mediaItems;
+@property ( nonatomic, strong ) AFHTTPRequestOperationManager *instagramOperationManager;
 
 @end
 
 @implementation BLCDataSource
-{
-  NSMutableArray *_mediaItems;
-}
 
 + ( instancetype ) sharedInstance
 {
   static dispatch_once_t once;
   static id sharedInstance;
-  dispatch_once(&once, ^
+  dispatch_once( &once, ^
                 {
                   sharedInstance = [[self alloc] init];
-                });
+                } );
   return sharedInstance;
 }
 
@@ -71,7 +73,6 @@
     }
     else
     {
-      [self populateDataWithParameters:nil completionHandler:nil];
       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
         {
           NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
@@ -151,11 +152,32 @@
   {
     BLCMedia *mediaItem = [[BLCMedia alloc] initWithDictionary:mediaDictionary];
     
-   if ( mediaItem )
-   {
+    if ( mediaItem )
+    {
       [tmpMediaItems addObject:mediaItem];
       [self downloadImageForMediaItem:mediaItem];
     }
+  }
+  
+  if ( tmpMediaItems.count > 0 )
+  {
+    // Write the changes to disk
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
+      {
+         NSUInteger numberOfItemsToSave = MIN(self.mediaItems.count, 50);
+         NSArray *mediaItemsToSave = [self.mediaItems subarrayWithRange:NSMakeRange(0, numberOfItemsToSave)];
+ 
+         NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
+         NSData *mediaItemData = [NSKeyedArchiver archivedDataWithRootObject:mediaItemsToSave];
+ 
+         NSError *dataError;
+         BOOL wroteSuccessfully = [mediaItemData writeToFile:fullPath options:NSDataWritingAtomic | NSDataWritingFileProtectionCompleteUnlessOpen error:&dataError];
+ 
+         if ( !wroteSuccessfully )
+         {
+           NSLog( @"Couldn't write file: %@", dataError );
+         }
+      });
   }
   
   NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
@@ -186,27 +208,6 @@
     [self willChangeValueForKey:@"mediaItems"];
     self.mediaItems = tmpMediaItems;
     [self didChangeValueForKey:@"mediaItems"];
-  }
-  
-  if ( tmpMediaItems.count > 0 )
-  {
-    // Write the changes to disk
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
-      {
-         NSUInteger numberOfItemsToSave = MIN(self.mediaItems.count, 50);
-         NSArray *mediaItemsToSave = [self.mediaItems subarrayWithRange:NSMakeRange(0, numberOfItemsToSave)];
- 
-         NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
-         NSData *mediaItemData = [NSKeyedArchiver archivedDataWithRootObject:mediaItemsToSave];
- 
-         NSError *dataError;
-         BOOL wroteSuccessfully = [mediaItemData writeToFile:fullPath options:NSDataWritingAtomic | NSDataWritingFileProtectionCompleteUnlessOpen error:&dataError];
- 
-         if ( !wroteSuccessfully )
-         {
-           NSLog( @"Couldn't write file: %@", dataError );
-         }
-      });
   }
 }
 

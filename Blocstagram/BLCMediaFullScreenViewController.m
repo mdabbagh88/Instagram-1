@@ -42,7 +42,6 @@
   self.scrollView.delegate = self;
   self.scrollView.backgroundColor = [UIColor whiteColor];
   
-  //why don't we make this self.view = self.scrollview?
   [self.view addSubview:self.scrollView];
   
   self.imageView = [UIImageView new];
@@ -55,14 +54,13 @@
   
   self.doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector( doubleTapFired: )];
   self.doubleTap.numberOfTapsRequired = 2;
+  [self.tap requireGestureRecognizerToFail:self.doubleTap];
   
   //Add Custom Share Button
   self.shareButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
   [self.shareButton setTitle:@"Share" forState:UIControlStateNormal];
   [self.shareButton addTarget:self action:@selector( shareButtonPressed: ) forControlEvents:UIControlEventTouchUpInside];
   [self.scrollView addSubview:self.shareButton];
-  
-  [self.tap requireGestureRecognizerToFail:self.doubleTap];
   
   [self.scrollView addGestureRecognizer:self.tap];
   [self.scrollView addGestureRecognizer:self.doubleTap];
@@ -166,20 +164,14 @@
 {
   NSMutableArray *itemsToShare = [NSMutableArray array];
   
-  if ( self.media.caption.length > 0 )
-  {
-    [itemsToShare addObject:self.media.caption];
-  }
   if (self.media.image)
   {
     [itemsToShare addObject:self.media.image];
   }
   if (itemsToShare.count > 0)
   {
-    BLCImagesTableViewController *tableViewVC = [[BLCImagesTableViewController alloc] initWithStyle:UITableViewStylePlain];
-    
-    [self presentViewController:tableViewVC animated:YES completion:nil];
-    [tableViewVC presentActivityVC:itemsToShare];
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
+    [self presentViewController:activityVC animated:YES completion:nil];
   }
 }
 

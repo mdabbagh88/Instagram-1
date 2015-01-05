@@ -8,14 +8,13 @@
 
 @class BLCMedia;
 #import <Foundation/Foundation.h>
-#import <UICKeyChainStore.h>
-#import <AFNetworking/AFNetworking.h>
+
 
 typedef void ( ^BLCNewItemCompletionBlock )( NSError *error );
 
 @interface BLCDataSource : NSObject
 
-@property ( nonatomic, strong, readonly ) NSMutableArray *mediaItems;
+@property ( nonatomic, strong, readonly ) NSArray *mediaItems;
 @property (nonatomic, strong, readonly) NSString *accessToken;
 
 + ( instancetype ) sharedInstance;

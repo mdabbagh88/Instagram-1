@@ -155,7 +155,7 @@
   return self.items.count;
 }
 
-- ( NSMutableArray* ) items
+- ( NSArray* ) items
 {
   return [BLCDataSource sharedInstance].mediaItems;
 }
@@ -236,14 +236,9 @@
   
   if (itemsToShare.count > 0)
   {
-    [self presentActivityVC:itemsToShare];
-  }
-}
-
-- ( void ) presentActivityVC:( NSMutableArray * ) itemsToShare
-{
   UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
   [self presentViewController:activityVC animated:YES completion:nil];
+  }
 }
 
 @end
