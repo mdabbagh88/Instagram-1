@@ -72,6 +72,7 @@
       self.spinnerView.hidden = YES;
       self.userInteractionEnabled = YES;
   }
+  
   [self setImage:[UIImage imageNamed:imageName] forState:UIControlStateNormal];
 }
 

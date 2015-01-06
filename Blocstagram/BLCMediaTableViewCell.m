@@ -101,23 +101,23 @@ static NSParagraphStyle *paragraphStyle;
     self.commentLabel = [[UILabel alloc] init];
     self.commentLabel.numberOfLines = 0;
     
-    self.likeLabel = [UILabel alloc];
+    self.likeLabel = [[UILabel alloc] init];
     self.likeLabel.numberOfLines = 0;
     
     self.likeButton = [[BLCLikeButton alloc] init];
     [self.likeButton addTarget:self action:@selector( likePressed: ) forControlEvents:UIControlEventTouchUpInside];
     self.likeButton.backgroundColor = [UIColor whiteColor];
     
-    for ( UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel, self.likeButton] )
+    for ( UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel, self.likeButton, self.likeLabel] )
     {
       [self.contentView addSubview:view];
       view.translatesAutoresizingMaskIntoConstraints = NO;
     }
     
-    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings( _mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton, _likeLabel );
+    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings( _mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton, _likeLabel);
     
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|" options:kNilOptions metrics:nil views:viewDictionary]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel][_likeButton(==38)]|" options:NSLayoutFormatAlignAllTop | NSLayoutFormatAlignAllBottom metrics:nil views:viewDictionary]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel][_likeLabel]-[_likeButton(==38)]|" options:NSLayoutFormatAlignAllTop | NSLayoutFormatAlignAllBottom metrics:nil views:viewDictionary]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_commentLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
     
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_mediaImageView][_usernameAndCaptionLabel][_commentLabel]"
@@ -235,6 +235,8 @@ static NSParagraphStyle *paragraphStyle;
   {
     self.imageHeightConstraint.constant = 0;
   }
+  
+  [self.likeLabel sizeToFit];
   
   // Hide the line between cells
   self.separatorInset = UIEdgeInsetsMake( 0, 0, 0, CGRectGetWidth( self.bounds ) );
