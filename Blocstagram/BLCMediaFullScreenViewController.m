@@ -60,7 +60,7 @@
   self.shareButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
   [self.shareButton setTitle:@"Share" forState:UIControlStateNormal];
   [self.shareButton addTarget:self action:@selector( shareButtonPressed: ) forControlEvents:UIControlEventTouchUpInside];
-  [self.scrollView addSubview:self.shareButton];
+  [self.view addSubview:self.shareButton];
   
   [self.scrollView addGestureRecognizer:self.tap];
   [self.scrollView addGestureRecognizer:self.doubleTap];
@@ -70,7 +70,7 @@
 {
   [super viewWillAppear:animated];
   [self centerScrollView];
-  self.shareButton.hidden = true;
+  self.shareButton.hidden = false;
 }
 
 - ( void ) viewWillLayoutSubviews
@@ -125,7 +125,8 @@
   return self.imageView;
 }
 
-- ( void)scrollViewDidZoom:(UIScrollView *)scrollView {
+- ( void )scrollViewDidZoom:( UIScrollView * )scrollView
+{
   [self centerScrollView];
 }
 
@@ -136,12 +137,11 @@
   [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- ( void ) doubleTapFired:(UITapGestureRecognizer *)sender
+- ( void ) doubleTapFired:( UITapGestureRecognizer * )sender
 {
-
   if ( self.scrollView.zoomScale == self.scrollView.minimumZoomScale )
   {
-    self.shareButton.hidden = true;
+    self.shareButton.hidden = false;
     CGPoint locationPoint = [sender locationInView:self.imageView];
     
     CGSize scrollViewSize = self.scrollView.bounds.size;
@@ -163,7 +163,6 @@
 -( void )shareButtonPressed:( id )sender
 {
   NSMutableArray *itemsToShare = [NSMutableArray array];
-  
   if (self.media.image)
   {
     [itemsToShare addObject:self.media.image];

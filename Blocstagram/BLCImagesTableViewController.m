@@ -199,7 +199,12 @@
 
 - ( void ) cell:( BLCMediaTableViewCell * )cell didDoubleTapImageView:( UIImageView * )imageView
 {
-  [[BLCDataSource sharedInstance] requestNewItemsWithCompletionHandler:nil];
+  NSLog(@"Did Double Tap");
+  BLCMedia *mediaItem = cell.mediaItem;
+  if ( mediaItem.downloadState == BLCMediaDownloadStateNeedsImage )
+  {
+    [[BLCDataSource sharedInstance] downloadImageForMediaItem:mediaItem];
+  }
 }
 
 #pragma mark - UIViewControllerTransitioningDelegate
@@ -260,6 +265,11 @@
   {
     return 150;
   }
+}
+
+- ( void ) cellDidPressLikeButton:( BLCMediaTableViewCell * )cell
+{
+  [[BLCDataSource sharedInstance] toggleLikeOnMediaItem:cell.mediaItem];
 }
 
 @end

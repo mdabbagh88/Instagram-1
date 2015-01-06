@@ -15,6 +15,7 @@
 - ( void ) cell: ( BLCMediaTableViewCell * )cell didTapImageView:( UIImageView *)imageView;
 - ( void ) cell: ( BLCMediaTableViewCell * )cell didDoubleTapImageView:( UIImageView *)imageView;
 - ( void ) cell: ( BLCMediaTableViewCell * )cell didLongPressImageView:( UIImageView *)imageView;
+- ( void ) cellDidPressLikeButton:(BLCMediaTableViewCell *)cell;
 
 @end
 
@@ -30,5 +31,7 @@
 // Set a new media item
 - ( void )setMediaItem:( BLCMedia * )mediaItem;
 + ( CGFloat ) heightForMediaItem:( BLCMedia * )mediaItem width:( CGFloat )width;
+
+
 
 @end
