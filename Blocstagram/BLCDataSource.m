@@ -1,10 +1,10 @@
-  //
-  //  BLCDatasource.m
-  //  Blocstagram
-  //
-  //  Created by Eric Gu on 12/29/14.
-  //  Copyright (c) 2014 egu. All rights reserved.
-  //
+//
+//  BLCDatasource.m
+//  Blocstagram
+//
+//  Created by Eric Gu on 12/29/14.
+//  Copyright (c) 2014 egu. All rights reserved.
+//
 
 #import "BLCDataSource.h"
 #import "BLCUser.h"
@@ -55,16 +55,16 @@
   {
     NSURL *baseURL = [NSURL URLWithString:@"https://api.instagram.com/v1/"];
     self.instagramOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:baseURL];
-         
+    
     AFJSONResponseSerializer *jsonSerializer = [AFJSONResponseSerializer serializer];
- 
+    
     AFImageResponseSerializer *imageSerializer = [AFImageResponseSerializer serializer];
     imageSerializer.imageScale = 1.0;
-         
+    
     AFCompoundResponseSerializer *serializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:@[jsonSerializer, imageSerializer]];
     self.instagramOperationManager.responseSerializer = serializer;
-  
-  
+    
+    
     self.accessToken = [UICKeyChainStore stringForKey:@"access token"];
     
     if ( !self.accessToken )
@@ -73,28 +73,28 @@
     }
     else
     {
-      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
-        {
-          NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
-          NSArray *storedMediaItems = [NSKeyedUnarchiver unarchiveObjectWithFile:fullPath];
- 
-          dispatch_async(dispatch_get_main_queue( ), ^
-          {
-            if ( storedMediaItems.count > 0 )
-            {
-               NSMutableArray *mutableMediaItems = [storedMediaItems mutableCopy];
- 
-               [self willChangeValueForKey:@"mediaItems"];
-               self.mediaItems = mutableMediaItems;
-               [self didChangeValueForKey:@"mediaItems"];
-               [self requestNewItemsWithCompletionHandler:nil];
-            }
-            else
-            {
-              [self populateDataWithParameters:nil completionHandler:nil];
-            }
-          });
-      });
+      dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0 ), ^
+                     {
+                       NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
+                       NSArray *storedMediaItems = [NSKeyedUnarchiver unarchiveObjectWithFile:fullPath];
+                       
+                       dispatch_async(dispatch_get_main_queue( ), ^
+                                      {
+                                        if ( storedMediaItems.count > 0 )
+                                        {
+                                          NSMutableArray *mutableMediaItems = [storedMediaItems mutableCopy];
+                                          
+                                          [self willChangeValueForKey:@"mediaItems"];
+                                          self.mediaItems = mutableMediaItems;
+                                          [self didChangeValueForKey:@"mediaItems"];
+                                          [self requestNewItemsWithCompletionHandler:nil];
+                                        }
+                                        else
+                                        {
+                                          [self populateDataWithParameters:nil completionHandler:nil];
+                                        }
+                                      });
+                     });
     }
   }
   return self;
@@ -121,24 +121,24 @@
     [self.instagramOperationManager GET:@"users/self/feed"
                              parameters:mutableParameters
                                 success:^( AFHTTPRequestOperation *operation, id responseObject )
-                                {
-                                  if ( [responseObject isKindOfClass:[NSDictionary class]] )
-                                  {
-                                    [self parseDataFromFeedDictionary:responseObject fromRequestWithParameters:parameters];
-                                    
-                                    if ( completionHandler )
-                                    {
-                                      completionHandler(nil);
-                                    }
-                                  }
-                                }
+     {
+       if ( [responseObject isKindOfClass:[NSDictionary class]] )
+       {
+         [self parseDataFromFeedDictionary:responseObject fromRequestWithParameters:parameters];
+         
+         if ( completionHandler )
+         {
+           completionHandler(nil);
+         }
+       }
+     }
                                 failure:^( AFHTTPRequestOperation *operation, NSError *error )
-                                {
-                                  if ( completionHandler )
-                                  {
-                                    completionHandler(error);
-                                  }
-                                }];
+     {
+       if ( completionHandler )
+       {
+         completionHandler(error);
+       }
+     }];
   }
 }
 
@@ -155,36 +155,36 @@
     if ( mediaItem )
     {
       [tmpMediaItems addObject:mediaItem];
-      //[self downloadImageForMediaItem:mediaItem];
+        //[self downloadImageForMediaItem:mediaItem];
     }
   }
   
   if ( tmpMediaItems.count > 0 )
   {
-    // Write the changes to disk
+      // Write the changes to disk
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^
-      {
-         NSUInteger numberOfItemsToSave = MIN(self.mediaItems.count, 50);
-         NSArray *mediaItemsToSave = [self.mediaItems subarrayWithRange:NSMakeRange(0, numberOfItemsToSave)];
- 
-         NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
-         NSData *mediaItemData = [NSKeyedArchiver archivedDataWithRootObject:mediaItemsToSave];
- 
-         NSError *dataError;
-         BOOL wroteSuccessfully = [mediaItemData writeToFile:fullPath options:NSDataWritingAtomic | NSDataWritingFileProtectionCompleteUnlessOpen error:&dataError];
- 
-         if ( !wroteSuccessfully )
-         {
-           NSLog( @"Couldn't write file: %@", dataError );
-         }
-      });
+                   {
+                     NSUInteger numberOfItemsToSave = MIN(self.mediaItems.count, 50);
+                     NSArray *mediaItemsToSave = [self.mediaItems subarrayWithRange:NSMakeRange(0, numberOfItemsToSave)];
+                     
+                     NSString *fullPath = [self pathForFilename:NSStringFromSelector(@selector(mediaItems))];
+                     NSData *mediaItemData = [NSKeyedArchiver archivedDataWithRootObject:mediaItemsToSave];
+                     
+                     NSError *dataError;
+                     BOOL wroteSuccessfully = [mediaItemData writeToFile:fullPath options:NSDataWritingAtomic | NSDataWritingFileProtectionCompleteUnlessOpen error:&dataError];
+                     
+                     if ( !wroteSuccessfully )
+                     {
+                       NSLog( @"Couldn't write file: %@", dataError );
+                     }
+                   });
   }
   
   NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
   
   if ( parameters[@"min_id"] )
   {
-    // This was a pull-to-refresh request
+      // This was a pull-to-refresh request
     
     NSRange rangeOfIndexes = NSMakeRange( 0, tmpMediaItems.count );
     NSIndexSet *indexSetOfNewObjects = [NSIndexSet indexSetWithIndexesInRange:rangeOfIndexes];
@@ -194,11 +194,11 @@
   
   else if ( parameters[@"max_id"] )
   {
-    // This was an infinite scroll request
+      // This was an infinite scroll request
     
     if ( tmpMediaItems.count == 0 )
     {
-      // disable infinite scroll, since there are no more older messages
+        // disable infinite scroll, since there are no more older messages
       self.thereAreNoMoreOlderMessages = YES;
     }
     [mutableArrayWithKVO addObjectsFromArray:tmpMediaItems];
@@ -219,40 +219,40 @@
     [self.instagramOperationManager GET:mediaItem.mediaURL.absoluteString
                              parameters:nil
                                 success:^( AFHTTPRequestOperation *operation, id responseObject )
-                                {
-                                  if ( [responseObject isKindOfClass:[UIImage class]] )
-                                  {
-                                    mediaItem.image = responseObject;
-                                    NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
-                                    NSUInteger index = [mutableArrayWithKVO indexOfObject:mediaItem];
-                                    [mutableArrayWithKVO replaceObjectAtIndex:index withObject:mediaItem];
-                                    NSLog(@"Success downloading Image: %@", mediaItem);
-                                  }
-                                  else
-                                  {
-                                    mediaItem.downloadState = BLCMediaDownloadStateNonRecoverableError;
-                                  }
-                                }
+     {
+       if ( [responseObject isKindOfClass:[UIImage class]] )
+       {
+         mediaItem.image = responseObject;
+         NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+         NSUInteger index = [mutableArrayWithKVO indexOfObject:mediaItem];
+         [mutableArrayWithKVO replaceObjectAtIndex:index withObject:mediaItem];
+        
+       }
+       else
+       {
+         mediaItem.downloadState = BLCMediaDownloadStateNonRecoverableError;
+       }
+     }
                                 failure:^( AFHTTPRequestOperation *operation, NSError *error )
-                                {
-                                  mediaItem.downloadState = BLCMediaDownloadStateNonRecoverableError;
-                                  if ([error.domain isEqualToString:NSURLErrorDomain])
-                                  {
-                                    if (error.code == NSURLErrorTimedOut ||
-                                        error.code == NSURLErrorCancelled ||
-                                        error.code == NSURLErrorCannotConnectToHost ||
-                                        error.code == NSURLErrorNetworkConnectionLost ||
-                                        error.code == NSURLErrorNotConnectedToInternet ||
-                                        error.code == kCFURLErrorInternationalRoamingOff ||
-                                        error.code == kCFURLErrorCallIsActive ||
-                                        error.code == kCFURLErrorDataNotAllowed ||
-                                        error.code == kCFURLErrorRequestBodyStreamExhausted)
-                                    {
-                                      mediaItem.downloadState = BLCMediaDownloadStateNeedsImage;
-                                    }
-                                        
-                                  }
-                                }];
+     {
+       mediaItem.downloadState = BLCMediaDownloadStateNonRecoverableError;
+       if ( [error.domain isEqualToString:NSURLErrorDomain] )
+       {
+         if ( error.code == NSURLErrorTimedOut ||
+             error.code == NSURLErrorCancelled ||
+             error.code == NSURLErrorCannotConnectToHost ||
+             error.code == NSURLErrorNetworkConnectionLost ||
+             error.code == NSURLErrorNotConnectedToInternet ||
+             error.code == kCFURLErrorInternationalRoamingOff ||
+             error.code == kCFURLErrorCallIsActive ||
+             error.code == kCFURLErrorDataNotAllowed ||
+             error.code == kCFURLErrorRequestBodyStreamExhausted )
+         {
+           mediaItem.downloadState = BLCMediaDownloadStateNeedsImage;
+         }
+         
+       }
+     }];
   }
 }
 
@@ -304,24 +304,24 @@
     if (self.mediaItems.count == 0)
     {
       [self populateDataWithParameters:nil completionHandler:^(NSError *error) {
-      self.isRefreshing = NO;
-      
-      if (completionHandler) {
-        completionHandler(error);
-      }
+        self.isRefreshing = NO;
+        
+        if (completionHandler) {
+          completionHandler(error);
+        }
       }];
     }
     else
     {
       NSString *minID = [[self.mediaItems firstObject] idNumber];
       NSDictionary *parameters = @{@"min_id": minID};
-    
-      [self populateDataWithParameters:parameters completionHandler:^(NSError *error) {
-      self.isRefreshing = NO;
       
-      if (completionHandler) {
-        completionHandler(error);
-      }
+      [self populateDataWithParameters:parameters completionHandler:^(NSError *error) {
+        self.isRefreshing = NO;
+        
+        if (completionHandler) {
+          completionHandler(error);
+        }
       }];
     }
   }
@@ -352,8 +352,8 @@
   return dataPath;
 }
 
- #pragma mark - Liking Media Items
- 
+#pragma mark - Liking Media Items
+
 - ( void ) toggleLikeOnMediaItem:( BLCMedia * )mediaItem
 {
   NSString *urlString = [NSString stringWithFormat:@"media/%@/likes", mediaItem.idNumber];
@@ -364,30 +364,30 @@
     mediaItem.likeState = BLCLikeStateLiking;
     
     [self.instagramOperationManager POST:urlString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject)
-    {
-      mediaItem.likeState = BLCLikeStateLiked;
-      [self reloadMediaItem:mediaItem];
-    }
-    failure:^( AFHTTPRequestOperation *operation, NSError *error )
-    {
-      mediaItem.likeState = BLCLikeStateNotLiked;
-      [self reloadMediaItem:mediaItem];
-    }];
+     {
+       mediaItem.likeState = BLCLikeStateLiked;
+       [self reloadMediaItem:mediaItem];
+     }
+                                 failure:^( AFHTTPRequestOperation *operation, NSError *error )
+     {
+       mediaItem.likeState = BLCLikeStateNotLiked;
+       [self reloadMediaItem:mediaItem];
+     }];
     
   }
   else if ( mediaItem.likeState == BLCLikeStateLiked )
   {
     mediaItem.likeState = BLCLikeStateUnliking;
     [self.instagramOperationManager DELETE:urlString parameters:parameters success:^( AFHTTPRequestOperation *operation, id responseObject )
-    {
-      mediaItem.likeState = BLCLikeStateNotLiked;
-      [self reloadMediaItem:mediaItem];
-    }
-    failure:^( AFHTTPRequestOperation *operation, NSError *error )
-    {
-      mediaItem.likeState = BLCLikeStateLiked;
-      [self reloadMediaItem:mediaItem];
-    }];
+     {
+       mediaItem.likeState = BLCLikeStateNotLiked;
+       [self reloadMediaItem:mediaItem];
+     }
+                                   failure:^( AFHTTPRequestOperation *operation, NSError *error )
+     {
+       mediaItem.likeState = BLCLikeStateLiked;
+       [self reloadMediaItem:mediaItem];
+     }];
   }
   [self reloadMediaItem:mediaItem];
 }
@@ -397,6 +397,44 @@
   NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
   NSUInteger index = [mutableArrayWithKVO indexOfObject:mediaItem];
   [mutableArrayWithKVO replaceObjectAtIndex:index withObject:mediaItem];
+}
+
+
+#pragma mark - Comments
+
+- ( void ) commentOnMediaItem:( BLCMedia * )mediaItem withCommentText:( NSString * )commentText
+{
+  if ( !commentText || commentText.length == 0 )
+  {
+    return;
+  }
+  
+  NSString *urlString = [NSString stringWithFormat:@"media/%@/comments", mediaItem.idNumber];
+  NSDictionary *parameters = @{@"access_token": self.accessToken, @"text": commentText};
+  
+  [self.instagramOperationManager POST:urlString parameters:parameters success:^( AFHTTPRequestOperation *operation, id responseObject )
+  {
+    mediaItem.temporaryComment = nil;
+    
+    NSString *refreshMediaUrlString = [NSString stringWithFormat:@"media/%@", mediaItem.idNumber];
+    NSDictionary *parameters = @{@"access_token": self.accessToken};
+    [self.instagramOperationManager GET:refreshMediaUrlString parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+      BLCMedia *newMediaItem = [[BLCMedia alloc] initWithDictionary:responseObject];
+      NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+      NSUInteger index = [mutableArrayWithKVO indexOfObject:mediaItem];
+      [mutableArrayWithKVO replaceObjectAtIndex:index withObject:newMediaItem];
+    }
+    failure:^( AFHTTPRequestOperation *operation, NSError *error )
+    {
+      [self reloadMediaItem:mediaItem];
+    }];
+  }
+  failure:^( AFHTTPRequestOperation *operation, NSError *error )
+  {
+    NSLog(@"Error: %@", error);
+    NSLog(@"Response: %@", operation.responseString);
+    [self reloadMediaItem:mediaItem];
+  }];
 }
 
 @end

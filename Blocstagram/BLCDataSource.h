@@ -15,7 +15,7 @@ typedef void ( ^BLCNewItemCompletionBlock )( NSError *error );
 @interface BLCDataSource : NSObject
 
 @property ( nonatomic, strong, readonly ) NSArray *mediaItems;
-@property (nonatomic, strong, readonly) NSString *accessToken;
+@property ( nonatomic, strong, readonly ) NSString *accessToken;
 
 + ( instancetype ) sharedInstance;
 + ( NSString * ) instagramClientID;
@@ -25,4 +25,5 @@ typedef void ( ^BLCNewItemCompletionBlock )( NSError *error );
 - ( void ) requestOldItemsWithCompletionHandler:(BLCNewItemCompletionBlock )completionHandler;
 - ( void ) downloadImageForMediaItem:( BLCMedia * )mediaItem;
 - ( void ) toggleLikeOnMediaItem:(BLCMedia *)mediaItem;
+- ( void ) commentOnMediaItem:(BLCMedia *)mediaItem withCommentText:(NSString *)commentText;
 @end

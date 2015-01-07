@@ -11,9 +11,9 @@
 #import "BLCComment.h"
 #import "BLCUser.h"
 #import "BLCLikeButton.h"
+#import "BLCComposeCommentView.h"
 
-
-@interface BLCMediaTableViewCell ( ) <UIGestureRecognizerDelegate>
+@interface BLCMediaTableViewCell ( ) <UIGestureRecognizerDelegate, BLCComposeCommentViewDelegate>
 {
   BLCMedia* _mediaItem;
 }
@@ -25,11 +25,10 @@
 @property ( nonatomic, strong ) NSLayoutConstraint *imageHeightConstraint;
 @property ( nonatomic, strong ) NSLayoutConstraint *usernameAndCaptionLabelHeightConstraint;
 @property ( nonatomic, strong ) NSLayoutConstraint *commentLabelHeightConstraint;
-
 @property ( nonatomic, strong ) UITapGestureRecognizer *tapGestureRecognizer;
 @property ( nonatomic, strong ) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property ( nonatomic, strong ) UITapGestureRecognizer *doubleTapGestureRecognizer;
-
+@property (nonatomic, strong) BLCComposeCommentView *commentView;
 @property ( nonatomic, strong ) BLCLikeButton *likeButton;
 
 @end
@@ -71,7 +70,7 @@ static NSParagraphStyle *paragraphStyle;
   [layoutCell layoutIfNeeded];
   
     // Get the actual height required for the cell
-  return CGRectGetMaxY(layoutCell.commentLabel.frame);
+  return CGRectGetMaxY(layoutCell.commentView.frame);
 }
 
 - ( id )initWithStyle:( UITableViewCellStyle )style reuseIdentifier:( NSString * )reuseIdentifier
@@ -108,19 +107,23 @@ static NSParagraphStyle *paragraphStyle;
     [self.likeButton addTarget:self action:@selector( likePressed: ) forControlEvents:UIControlEventTouchUpInside];
     self.likeButton.backgroundColor = [UIColor whiteColor];
     
-    for ( UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel, self.likeButton, self.likeLabel] )
+    self.commentView = [[BLCComposeCommentView alloc] init];
+    self.commentView.delegate = self;
+    
+    for ( UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel, self.likeButton, self.likeLabel,self.commentView] )
     {
       [self.contentView addSubview:view];
       view.translatesAutoresizingMaskIntoConstraints = NO;
     }
     
-    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings( _mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton, _likeLabel);
+    NSDictionary *viewDictionary = NSDictionaryOfVariableBindings( _mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton, _likeLabel, _commentView);
     
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|" options:kNilOptions metrics:nil views:viewDictionary]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_commentView]|" options:kNilOptions metrics:nil views:viewDictionary]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel][_likeLabel]-[_likeButton(==38)]|" options:NSLayoutFormatAlignAllTop | NSLayoutFormatAlignAllBottom metrics:nil views:viewDictionary]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_commentLabel]|" options:kNilOptions metrics:nil views:viewDictionary]];
     
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_mediaImageView][_usernameAndCaptionLabel][_commentLabel]"
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_mediaImageView][_usernameAndCaptionLabel][_commentLabel][_commentView(==100)]"
                                                                              options:kNilOptions
                                                                              metrics:nil
                                                                                views:viewDictionary]];
@@ -132,7 +135,6 @@ static NSParagraphStyle *paragraphStyle;
                                                               attribute:NSLayoutAttributeNotAnAttribute
                                                              multiplier:1
                                                                constant:100];
-    
     
     self.usernameAndCaptionLabelHeightConstraint = [NSLayoutConstraint constraintWithItem:_usernameAndCaptionLabel
                                                                                 attribute:NSLayoutAttributeHeight
@@ -203,7 +205,6 @@ static NSParagraphStyle *paragraphStyle;
     
     [commentString appendAttributedString:oneCommentString];
   }
-  
   return commentString;
 }
 
@@ -212,14 +213,12 @@ static NSParagraphStyle *paragraphStyle;
   CGFloat usernameFontSize = 15;
   NSString *baseString = [NSString stringWithFormat:@"%@", self.mediaItem.likes];
   NSMutableAttributedString *mutableLikeString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : [lightFont fontWithSize:usernameFontSize]}];
-  
   return mutableLikeString;
 }
 
 - ( void ) layoutSubviews
 {
   [super layoutSubviews];
-  
   CGSize maxSize = CGSizeMake(CGRectGetWidth(self.bounds), CGFLOAT_MAX);
   CGSize usernameLabelSize = [self.usernameAndCaptionLabel sizeThatFits:maxSize];
   CGSize commentLabelSize = [self.commentLabel sizeThatFits:maxSize];
@@ -250,6 +249,7 @@ static NSParagraphStyle *paragraphStyle;
   self.commentLabel.attributedText = [self commentString];
   self.likeButton.likeButtonState = mediaItem.likeState;
   self.likeLabel.attributedText = [self likeString];
+  self.commentView.text = mediaItem.temporaryComment;
 }
 
 #pragma mark - Liking
@@ -285,5 +285,23 @@ static NSParagraphStyle *paragraphStyle;
 {
   return self.isEditing == NO;
 }
+
+ #pragma mark - BLCComposeCommentViewDelegate
+ 
+ - (void) commentViewDidPressCommentButton:(BLCComposeCommentView *)sender {
+     [self.delegate cell:self didComposeComment:self.mediaItem.temporaryComment];
+ }
+ 
+ - (void) commentView:(BLCComposeCommentView *)sender textDidChange:(NSString *)text {
+     self.mediaItem.temporaryComment = text;
+ }
+ 
+ - (void) commentViewWillStartEditing:(BLCComposeCommentView *)sender {
+     [self.delegate cellWillStartComposingComment:self];
+ }
+ 
+ - (void) stopComposingComment {
+     [self.commentView stopComposingComment];
+ }
 
 @end
