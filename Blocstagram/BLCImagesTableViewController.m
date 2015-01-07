@@ -374,6 +374,18 @@
 - ( void ) cellDidPressLikeButton:( BLCMediaTableViewCell * )cell
 {
   [[BLCDataSource sharedInstance] toggleLikeOnMediaItem:cell.mediaItem];
+  
+  
+  if (cell.mediaItem.likeState == BLCLikeStateLiking)
+  {
+    int i = [cell.mediaItem.likes intValue] + 1;
+    cell.mediaItem.likes = [NSString stringWithFormat:@"%d", i];
+  }
+  if (cell.mediaItem.likeState == BLCLikeStateUnliking)
+  {
+    int i = [cell.mediaItem.likes intValue] - 1;
+    cell.mediaItem.likes = [NSString stringWithFormat:@"%d", i];
+  }
 }
 
 @end
