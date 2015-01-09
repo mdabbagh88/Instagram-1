@@ -17,6 +17,7 @@
 #import "BLCMediaFullScreenAnimator.h"
 #import "BLCCameraViewController.h"
 #import "BLCImageLibraryViewController.h"
+#import "BLCPostToInstagramViewController.h"
 
 #define cellIdentifier @"mediaCell"
 
@@ -300,10 +301,7 @@
 - ( void ) cell:( BLCMediaTableViewCell * )cell didTapImageView:( UIImageView * )imageView
 {
   self.lastTappedImageView = imageView;
-  
-  
   BLCMediaFullScreenViewController *fullScreenVC = [[BLCMediaFullScreenViewController alloc] initWithMedia:cell.mediaItem];
-  
   fullScreenVC.transitioningDelegate = self;
   fullScreenVC.modalPresentationStyle = UIModalPresentationCustom;
   [self presentViewController:fullScreenVC animated:YES completion:nil];
@@ -338,17 +336,14 @@
 - ( void ) cell:( BLCMediaTableViewCell * )cell didLongPressImageView:( UIImageView * )imageView
 {
   NSMutableArray *itemsToShare = [NSMutableArray array];
-  
   if ( cell.mediaItem.caption.length > 0 )
   {
     [itemsToShare addObject:cell.mediaItem.caption];
   }
-  
   if (cell.mediaItem.image)
   {
     [itemsToShare addObject:cell.mediaItem.image];
   }
-  
   if (itemsToShare.count > 0)
   {
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:itemsToShare applicationActivities:nil];
@@ -381,7 +376,6 @@
 - ( void ) cellDidPressLikeButton:( BLCMediaTableViewCell * )cell
 {
   [[BLCDataSource sharedInstance] toggleLikeOnMediaItem:cell.mediaItem];
-  
   
   if (cell.mediaItem.likeState == BLCLikeStateLiking)
   {
@@ -421,29 +415,25 @@
 
 - ( void ) cameraViewController:( BLCCameraViewController * )cameraViewController didCompleteWithImage:( UIImage * )image
 {
-  [cameraViewController dismissViewControllerAnimated:YES completion:^{
-    if ( image )
-    {
-      NSLog(@"Got an image!");
-    }
-    else
-    {
-      NSLog(@"Closed without an image.");
-    }
-  }];
+  [self handleImage:image withNavigationController:cameraViewController.navigationController];
 }
 
-- ( void ) imageLibraryViewController:( BLCImageLibraryViewController * )imageLibraryViewController didCompleteWithImage:( UIImage * )image {
-  [imageLibraryViewController dismissViewControllerAnimated:YES completion:^{
-    if ( image )
-    {
-      NSLog(@"Got an image!");
-    }
-    else
-    {
-      NSLog(@"Closed without an image.");
-    }
-  }];
+- ( void ) imageLibraryViewController:( BLCImageLibraryViewController * )imageLibraryViewController didCompleteWithImage:( UIImage * )image
+{
+  [self handleImage:image withNavigationController:imageLibraryViewController.navigationController];
+}
+
+- ( void ) handleImage:( UIImage * )image withNavigationController:( UINavigationController * )nav
+{
+  if ( image )
+  {
+    BLCPostToInstagramViewController *postVC = [[BLCPostToInstagramViewController alloc] initWithImage:image];
+    [nav pushViewController:postVC animated:YES];
+  }
+  else
+  {
+    [nav dismissViewControllerAnimated:YES completion:nil];
+  }
 }
 
 @end

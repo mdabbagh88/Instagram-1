@@ -74,11 +74,9 @@
   }
   
   self.purpleView.frame = CGRectMake( buttonWidth, 0, buttonWidth, CGRectGetHeight( self.bounds ) );
-  
   UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:self.purpleView.bounds
                                                  byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight
                                                        cornerRadii:CGSizeMake( 10.0, 10.0 )];
-  
   CAShapeLayer *maskLayer = [CAShapeLayer layer];
   maskLayer.frame = self.purpleView.bounds;
   maskLayer.path = maskPath.CGPath;
