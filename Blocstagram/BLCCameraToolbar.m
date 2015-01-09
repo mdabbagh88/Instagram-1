@@ -9,13 +9,14 @@
 #import "BLCCameraToolbar.h"
 
 @interface BLCCameraToolbar ( )
- 
+
 @property ( nonatomic, strong ) UIButton *leftButton;
 @property ( nonatomic, strong ) UIButton *cameraButton;
 @property ( nonatomic, strong ) UIButton *rightButton;
+
 @property ( nonatomic, strong ) UIView *whiteView;
 @property ( nonatomic, strong ) UIView *purpleView;
- 
+
 @end
 
 @implementation BLCCameraToolbar
@@ -55,7 +56,7 @@
   return self;
 }
 
-- ( void ) layoutSubviews
+- (void) layoutSubviews
 {
   [super layoutSubviews];
   
@@ -63,7 +64,7 @@
   whiteFrame.origin.y += 10;
   self.whiteView.frame = whiteFrame;
   
-  CGFloat buttonWidth = CGRectGetWidth(self.bounds) / 3;
+  CGFloat buttonWidth = CGRectGetWidth( self.bounds ) / 3;
   
   NSArray *buttons = @[self.leftButton, self.cameraButton, self.rightButton];
   for ( int i = 0; i < 3; i++ )
@@ -83,7 +84,6 @@
   maskLayer.path = maskPath.CGPath;
   
   self.purpleView.layer.mask = maskLayer;
-  
 }
 
 # pragma mark - Button Handlers
